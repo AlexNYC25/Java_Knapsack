@@ -1,4 +1,5 @@
-import java.io.File; 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.Vector;
@@ -13,7 +14,6 @@ class Knapsack {
     // variables for the actual searching of the best combination
     static int[] bestCombination = null;
     static int bestCombinationValue = 0;
-    static int bestCombinationWeight = 0;
 
 
     /*
@@ -57,8 +57,7 @@ class Knapsack {
     }
   
     // The main utilty function that is called to properly use the combinationUtil function
-    static void createCombinations(int arr[], int end, int size)
-    {
+    static void createCombinations(int arr[], int end, int size){
         // an initial empty array to hold the combination of elements of length size 
         int data[] = new int[size];
   
@@ -66,9 +65,7 @@ class Knapsack {
         combinationUtil(arr, data, 0, end-1, 0, size);
     }
 
-
-
-    static void maxCombination(int[][] valueMatrix, int maxWeight){
+    static void maxCombination(int[][] valueMatrix, int maxWeight, FileWriter output){
         for(int x = 0; x < listOfCombinations.size(); x++){
             int[] currentCombination = listOfCombinations.get(x);
             int totalWeight = 0;
@@ -92,6 +89,21 @@ class Knapsack {
 
             }
         }
+
+        try{
+            output.write("Running " + count + " combinations for the knapsack problem \n");
+            output.write("The best combinaton of items are: ");
+            for(int x = 0; x < bestCombination.length; x++){
+                output.write(bestCombination[x] + " ");
+                if(x == bestCombination.length - 1){
+                    output.write("\n");
+                }
+            }
+            
+        } catch (IOException e){
+            System.out.println("An error has occured when writing to output file");
+        }
+
     }
 
 
@@ -144,23 +156,39 @@ class Knapsack {
         }
         
 
-        maxCombination(easyMatrix, 30);
+        try{
+            // create file 
+            File outPutFile = new File("output.txt");
+            if(outPutFile.createNewFile()){
+                System.out.println("File Created");
 
-        for(int x = 0; x < bestCombination.length; x++){
-            System.out.println(bestCombination[x]);
-        }
-
-        /*
-        for(int x = 0; x < listOfCombinations.size(); x++){
-            int[] currentCombination = listOfCombinations.get(x);
-            for(int y = 0; y < currentCombination.length; y++){
-                System.out.print(currentCombination[y] + " ");
+            } else {
+                System.out.println("File already exists");
             }
-            System.out.println("");
-        }
-        */
 
-        
+            // create fileWriter object to write output
+            FileWriter myFileWriter = new FileWriter("output.txt");
+
+            int weight = 30;
+
+            myFileWriter.write("Finding the best combination of " + easyMatrix.length + "items in terms of value, while the items together do not exceed " + weight + "\n");
+            maxCombination(easyMatrix, 30, myFileWriter);
+
+            //maxCombination(mediumMatrix, 30, myFileWriter);
+            //maxCombination(hardMatrix, 30, myFileWriter);
+
+
+            
+
+
+            myFileWriter.close();
+
+            System.out.println("Finished writing output file");
+        }
+        catch (IOException e) {
+            System.out.println("An error occured when creating output file");
+            e.printStackTrace();
+        }
 
     }
 }
