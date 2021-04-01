@@ -3,6 +3,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.Vector;
+import java.util.Random;
 
 class Knapsack {
 
@@ -61,11 +62,11 @@ class Knapsack {
         // an initial empty array to hold the combination of elements of length size 
         int data[] = new int[size];
   
-        // actual combination work done by other function, initial to start the recursive search
+        // actual combination work done by other function, initial function call to start the recursive search
         combinationUtil(arr, data, 0, end-1, 0, size);
     }
 
-    static void maxCombination(int[][] valueMatrix, int maxWeight, FileWriter output){
+    static void bestCombination(int[][] valueMatrix, int maxWeight, FileWriter output){
         // resets global values
         bestCombination = null;
         bestCombinationValue = 0;
@@ -79,7 +80,7 @@ class Knapsack {
                 totalValue += valueMatrix[currentCombination[y]][1];
 
             }
-            if(totalWeight < maxWeight ){
+            if(totalWeight < maxWeight){
 
                 if(bestCombination == null){
                     bestCombination = currentCombination;
@@ -132,47 +133,79 @@ class Knapsack {
         int[] mediumNums = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
         int[] largeNums = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19};
 
+        // split initial file into array of strings
         for(int x = 0; x < 1; x++){
             initialStrings = sc.nextLine().split(" ");
         }
-
+        // split strings into the proper array
         for(int x = 0; x < 10; x++){
-            easyMatrix[x][0] = Integer.parseInt(initialStrings[0].split("")[x]);
-            easyMatrix[x][1] = Integer.parseInt(initialStrings[1].split("")[x]);
+            String[] tempWeight = initialStrings[0].split(",");
+            String[] tempValue = initialStrings[1].split(",");
+            easyMatrix[x][0] = Integer.parseInt(tempWeight[x]);
+            easyMatrix[x][1] = Integer.parseInt(tempValue[x]);
         }
 
         for(int x = 0; x < 15; x++){
-            mediumMatrix[x][0] = Integer.parseInt(initialStrings[2].split("")[x]);
-            mediumMatrix[x][1] = Integer.parseInt(initialStrings[3].split("")[x]);
+            String[] tempWeight = initialStrings[2].split(",");
+            String[] tempValue = initialStrings[3].split(",");
+            mediumMatrix[x][0] = Integer.parseInt(tempWeight[x]);
+            mediumMatrix[x][1] = Integer.parseInt(tempValue[x]);
         }
 
         for(int x = 0; x < 20; x++){
-            largeMatrix[x][0] = Integer.parseInt(initialStrings[4].split("")[x]);
-            largeMatrix[x][1] = Integer.parseInt(initialStrings[5].split("")[x]);
+            String[] tempWeight = initialStrings[4].split(",");
+            String[] tempValue = initialStrings[5].split(",");
+            largeMatrix[x][0] = Integer.parseInt(tempWeight[x]);
+            largeMatrix[x][1] = Integer.parseInt(tempValue[x]);
         }
         
-
+        // actual execution and writing output
         try{
-            // create file 
-            File outPutFile = new File("output.txt");
-            if(outPutFile.createNewFile()){
-                System.out.println("File Created");
 
-            } else {
-                System.out.println("File already exists");
+            File outPutFile = null;
+            FileWriter myFileWriter = null;
+
+            if(args.length == 1){
+                // create file 
+                outPutFile = new File("output.txt");
+                if(outPutFile.createNewFile()){
+                    System.out.println("Output file created");
+
+                } else {
+                    System.out.println("Output file has been overwritten");
+                }
+
+                // create fileWriter object to write output
+                myFileWriter = new FileWriter("output.txt");
             }
+            else{
+                outPutFile = new File(args[1]);
+                if(outPutFile.createNewFile()){
+                    System.out.println("Output file created");
 
-            // create fileWriter object to write output
-            FileWriter myFileWriter = new FileWriter("output.txt");
+                } else {
+                    System.out.println("Output file has been overwritten");
+                }
+                myFileWriter = new FileWriter(args[1]);
+                
+            }
+            
 
-            int weight = 30;
+            // max weight knapsack can handle
+            // TODO: create a random weight for every iteration
+            Random randomWeightGen = new Random();
+            // this is the abs max weight random gen can create for problem
+            int upperbound = 35;
+            int weight = randomWeightGen.nextInt(upperbound);
+
+            myFileWriter.write("Starting Brute Force Knapsack Problem \n\n");
 
             // iterates through loop to find all possible combinations of length x
             for(int x = 1; x <= 10; x++){
                 createCombinations(smallNums, 10, x);
             }
-            myFileWriter.write("Finding the best combination of " + easyMatrix.length + " items in terms of value, while the items together do not exceed " + weight + "\n");
-            maxCombination(easyMatrix, 30, myFileWriter);
+            myFileWriter.write("Finding the best combination of " + easyMatrix.length + " items in terms of value, while the items together do not exceed weight of " + weight + "\n");
+            bestCombination(easyMatrix, weight, myFileWriter);
             myFileWriter.write("\n");
             // reset combination list
             listOfCombinations =  new Vector<int[]>();
@@ -182,7 +215,7 @@ class Knapsack {
                 createCombinations(mediumNums, 15, x);
             }
             myFileWriter.write("Finding the best combination of " + mediumMatrix.length + " items in terms of value, while the items together do not exceed " + weight + "\n");
-            maxCombination(mediumMatrix, 30, myFileWriter);
+            bestCombination(mediumMatrix, weight, myFileWriter);
             myFileWriter.write("\n");
             listOfCombinations =  new Vector<int[]>();
 
@@ -190,27 +223,20 @@ class Knapsack {
                 createCombinations(largeNums, 20, x);
             }
             myFileWriter.write("Finding the best combination of " + largeMatrix.length + " items in terms of value, while the items together do not exceed " + weight + "\n");
-            maxCombination(largeMatrix, 30, myFileWriter);
+            bestCombination(largeMatrix, weight, myFileWriter);
             myFileWriter.write("\n");
             listOfCombinations =  new Vector<int[]>();
 
 
-
-            //maxCombination(mediumMatrix, 30, myFileWriter);
-            //maxCombination(hardMatrix, 30, myFileWriter);
-
-
-            
-
-
             myFileWriter.close();
 
-            System.out.println("Finished writing output file");
         }
         catch (IOException e) {
             System.out.println("An error occured when creating output file");
             e.printStackTrace();
         }
 
+        System.out.println("Program has finished running");
     }
+
 }
