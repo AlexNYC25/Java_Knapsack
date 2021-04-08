@@ -68,7 +68,7 @@ class Knapsack {
 
     static void bestCombination(int[][] valueMatrix, int maxWeight, FileWriter output){
         // resets global values
-        bestCombination = null;
+        bestCombination = new int[0];
         bestCombinationValue = 0;
 
         for(int x = 0; x < listOfCombinations.size(); x++){
@@ -117,15 +117,36 @@ class Knapsack {
 
     }
 
+    /*
+        helper array to check if a parameter flag is in an the args array
+    */
+    public static int doesItInclude(String[] arr, String word){
+
+        for(int x = 0; x < arr.length; x++){
+            if(arr[x].matches(word)){
+                return x;
+            }
+        }
+
+        return -1;
+    }
 
     public static void main(String[] args) throws Exception{
+        // argument flags
+        int inputPosition = doesItInclude(args, "-i") + 1;
+        int outputPosition = doesItInclude(args, "-o") + 1;
+
+        if(inputPosition >= args.length || outputPosition >= args.length || inputPosition == -1 || outputPosition == -1){
+            System.out.println("There is a missing parameter");
+            return;
+        }
         // initial data file
-        File file = new File(args[0]); 
+        File file = new File(args[inputPosition]); 
         Scanner sc = new Scanner(file); 
         String[] initialStrings = null;
 
         // 2d arrays to store values 
-        int[][] easyMatrix= new int[10][2];
+        int[][] easyMatrix = new int[10][2];
         int[][] mediumMatrix = new int[15][2];
         int[][] largeMatrix = new int[20][2];
         // companion array used for functions
@@ -165,7 +186,8 @@ class Knapsack {
             File outPutFile = null;
             FileWriter myFileWriter = null;
 
-            if(args.length == 1){
+            // if input file is passed but no output file
+            if(inputPosition >= 0 && inputPosition < args.length && outputPosition == -1 ){
                 // create file 
                 outPutFile = new File("output.txt");
                 if(outPutFile.createNewFile()){
@@ -179,7 +201,7 @@ class Knapsack {
                 myFileWriter = new FileWriter("output.txt");
             }
             else{
-                outPutFile = new File(args[1]);
+                outPutFile = new File(args[outputPosition]);
                 if(outPutFile.createNewFile()){
                     System.out.println("Output file created");
 
@@ -192,7 +214,6 @@ class Knapsack {
             
 
             // max weight knapsack can handle
-            // TODO: create a random weight for every iteration
             Random randomWeightGen = new Random();
             // this is the abs max weight random gen can create for problem
             int upperbound = 35;
@@ -237,6 +258,7 @@ class Knapsack {
         }
 
         System.out.println("Program has finished running");
+        sc.close();
     }
 
 }
