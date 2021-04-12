@@ -1,0 +1,20 @@
+Starting Brute Force Knapsack Problem 
+
+Finding the best combination of 10 items in terms of value, while the items together do not exceed weight of 24
+Running 1023 combinations for the knapsack problem 
+The best combinaton of items are: 0 1 2 3 4 6 8 9 
+The total value of the items: 48
+The total weight of the items: 22
+
+Finding the best combination of 15 items in terms of value, while the items together do not exceed 24
+Running 32767 combinations for the knapsack problem 
+The best combinaton of items are: 0 4 5 7 10 12 14 
+The total value of the items: 45
+The total weight of the items: 23
+
+Finding the best combination of 20 items in terms of value, while the items together do not exceed 24
+Running 1048575 combinations for the knapsack problem 
+The best combinaton of items are: 2 3 6 8 10 13 19 
+The total value of the items: 38
+The total weight of the items: 23
+
