@@ -5,7 +5,7 @@ import java.util.Scanner;
 import java.util.Vector;
 import java.util.Random;
 
-class Knapsack {
+class knapsack {
 
     // how many possible combinations exist currently    
     static int count = 0;
@@ -189,6 +189,7 @@ class Knapsack {
             // if input file is passed but no output file
             if(inputPosition >= 0 && inputPosition < args.length && outputPosition == -1 ){
                 // create file 
+                System.out.println("Missing ouutput paramaeter");
                 outPutFile = new File("output.txt");
                 if(outPutFile.createNewFile()){
                     System.out.println("Output file created");
@@ -208,7 +209,7 @@ class Knapsack {
                 } else {
                     System.out.println("Output file has been overwritten");
                 }
-                myFileWriter = new FileWriter(args[1]);
+                myFileWriter = new FileWriter(args[outputPosition]);
                 
             }
             
@@ -226,6 +227,10 @@ class Knapsack {
                 createCombinations(smallNums, 10, x);
             }
             myFileWriter.write("Finding the best combination of " + easyMatrix.length + " items in terms of value, while the items together do not exceed weight of " + weight + "\n");
+            myFileWriter.write("The input data given as item number - weight - value \n");
+            for(int x = 0; x < 10; x++){
+                myFileWriter.write("Item " + x + " - " + easyMatrix[x][0] + " - " + easyMatrix[x][1] + "\n");
+            }
             bestCombination(easyMatrix, weight, myFileWriter);
             myFileWriter.write("\n");
             // reset combination list
@@ -236,6 +241,10 @@ class Knapsack {
                 createCombinations(mediumNums, 15, x);
             }
             myFileWriter.write("Finding the best combination of " + mediumMatrix.length + " items in terms of value, while the items together do not exceed " + weight + "\n");
+            myFileWriter.write("The input data given as item number - weight - value \n");
+            for(int x = 0; x < 15; x++){
+                myFileWriter.write("Item " + x + " - " + mediumMatrix[x][0] + " - " + mediumMatrix[x][1] + "\n");
+            }
             bestCombination(mediumMatrix, weight, myFileWriter);
             myFileWriter.write("\n");
             listOfCombinations =  new Vector<int[]>();
@@ -244,6 +253,10 @@ class Knapsack {
                 createCombinations(largeNums, 20, x);
             }
             myFileWriter.write("Finding the best combination of " + largeMatrix.length + " items in terms of value, while the items together do not exceed " + weight + "\n");
+            myFileWriter.write("The input data given as item number - weight - value \n");
+            for(int x = 0; x < 20; x++){
+                myFileWriter.write("Item " + x + " - " + largeMatrix[x][0] + " - " + largeMatrix[x][1] + "\n");
+            }
             bestCombination(largeMatrix, weight, myFileWriter);
             myFileWriter.write("\n");
             listOfCombinations =  new Vector<int[]>();
